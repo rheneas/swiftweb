@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import static swiftweb.dsl.ServerDSL.run;
 import static org.junit.Assert.assertEquals;
+import static swiftweb.HttpTestUtils.*;
 
 public class DifferentMethodDispatchingTest {
     private ServerDSL.DSL dsl;
@@ -87,8 +88,6 @@ public class DifferentMethodDispatchingTest {
     }
 
     private void urlShouldReturnAsExpected(String path, String response) throws IOException {
-        HttpResponse httpResponse = httpClient.execute(new HttpGet("http://localhost:8080/" + path));
-        assertEquals(response, EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        assertEquals(response, getSuccess("http://localhost:8080/" + path, httpClient));
     }
 }

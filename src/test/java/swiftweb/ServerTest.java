@@ -1,7 +1,5 @@
 package swiftweb;
 
-import swiftweb.dsl.HttpMethod;
-import swiftweb.dsl.Route;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -11,13 +9,15 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import swiftweb.dsl.HttpMethod;
+import swiftweb.dsl.Route;
 
 import java.io.IOException;
 
-import static swiftweb.dsl.ServerDSL.DSL;
-import static swiftweb.dsl.ServerDSL.run;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static swiftweb.dsl.ServerDSL.DSL;
+import static swiftweb.dsl.ServerDSL.run;
 
 
 public class ServerTest {
