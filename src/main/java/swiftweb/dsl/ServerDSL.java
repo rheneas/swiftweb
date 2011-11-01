@@ -91,8 +91,5 @@ public class ServerDSL {
             context.addServlet(new ServletHolder(new RouteHandlerServlet(routeWrapper)), path);
         }
 
-        public Server getServer() {
-            return server;
-        }
     }
 }

@@ -8,6 +8,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 
 public class HttpTestUtils {
+
     public static String getSuccess(String uri, HttpClient httpClient) throws IOException {
         HttpResponse httpResponse = httpClient.execute(new HttpGet(uri));
         int statusCode = httpResponse.getStatusLine().getStatusCode();
