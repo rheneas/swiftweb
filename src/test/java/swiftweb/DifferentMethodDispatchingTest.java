@@ -2,11 +2,8 @@ package swiftweb;
 
 import swiftweb.dsl.Route;
 import swiftweb.dsl.ServerDSL;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +85,6 @@ public class DifferentMethodDispatchingTest {
     }
 
     private void urlShouldReturnAsExpected(String path, String response) throws IOException {
-        assertEquals(response, getSuccess("http://localhost:8080/" + path, httpClient));
+        assertEquals(response, get(httpClient, "http://localhost:8080/" + path));
     }
 }

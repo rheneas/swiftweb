@@ -3,17 +3,18 @@ package swiftweb.server;
 import swiftweb.dsl.HttpMethod;
 import swiftweb.dsl.Route;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 
 public class RouteWrapper {
 
-    private final Class handlerClass;
-    private final Method method;
-    private final Route routeAnnotation;
-    private final String path;
-    private final int status;
-    private final String contentType;
-    private final HttpMethod httpMethod;
+    protected final Class handlerClass;
+    protected final Method method;
+    protected final Route routeAnnotation;
+    protected final String path;
+    protected final int status;
+    protected final String contentType;
+    protected final HttpMethod httpMethod;
 
     public RouteWrapper(Class handlerClass, Method method, Route routeAnnotation) {
         this.handlerClass = handlerClass;
@@ -25,7 +26,7 @@ public class RouteWrapper {
         this.httpMethod = routeAnnotation.method();
     }
 
-    public String getPath() {
+    public String getServletPath() {
         return (path.length() == 0) ? method.getName() : path;
     }
 
@@ -57,7 +58,7 @@ public class RouteWrapper {
         return httpMethod;
     }
 
-    public boolean canHandle(HttpMethod httpMethod) {
+    public boolean canHandle(HttpServletRequest req, HttpMethod httpMethod) {
         return this.httpMethod == httpMethod;
     }
 }

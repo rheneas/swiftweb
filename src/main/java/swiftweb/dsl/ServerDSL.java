@@ -1,11 +1,12 @@
 package swiftweb.dsl;
 
-import swiftweb.server.RouteHandlerServlet;
-import swiftweb.server.RouteWrapper;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+import swiftweb.server.RouteHandlerServlet;
+import swiftweb.server.RouteWrapper;
+import swiftweb.server.RouteWrapperFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -79,14 +80,14 @@ public class ServerDSL {
             for (Method m : clazz.getMethods()) {
                 if (m.isAnnotationPresent(Route.class)) {
                     Route routeAnnotation = m.getAnnotation(Route.class);
-                    addRouteToContext(new RouteWrapper(clazz, m, routeAnnotation), context);
+                    addRouteToContext(new RouteWrapperFactory().newRouteWrapper(clazz, m, routeAnnotation), context);
                 } else {
                 }
             }
         }
 
         private void addRouteToContext(RouteWrapper routeWrapper, Context context) throws InstantiationException, IllegalAccessException {
-            String path = routeWrapper.getPath();
+            String path = routeWrapper.getServletPath();
             path = path.startsWith("/") ? path : "/" + path;
             context.addServlet(new ServletHolder(new RouteHandlerServlet(routeWrapper)), path);
         }

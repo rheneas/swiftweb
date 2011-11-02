@@ -10,18 +10,18 @@ import swiftweb.dsl.ServerDSL;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
 import static swiftweb.HttpTestUtils.get;
 import static swiftweb.dsl.ServerDSL.run;
 
-public class WildCardPathTest {
-
+public class UriParamsTest {
     private ServerDSL.DSL dsl;
     private HttpClient httpClient;
 
     public static class WildCardPathServer {
-        @Route(path = "xml/*", status = 200, contentType = "application/xml")
-        public String xml() {
-            return "<xml>some</xml>";
+        @Route(path = "xml/{:id}", status = 200, contentType = "application/xml")
+        public String xml(String id) {
+            return id;
         }
     }
 
@@ -38,9 +38,7 @@ public class WildCardPathTest {
     }
 
     @Test
-    public void shouldGetWildCardUri() throws IOException {
-        get(httpClient, "http://localhost:8080/xml/1");
-        get(httpClient, "http://localhost:8080/xml/2/3/4");
-        get(httpClient, "http://localhost:8080/xml/something/this/is/a/test");
+    public void shouldGetUriWithAParameter() throws IOException {
+        assertEquals("23", get(httpClient, "http://localhost:8080/xml/23"));
     }
 }

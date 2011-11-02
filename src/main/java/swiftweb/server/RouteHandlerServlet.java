@@ -50,7 +50,7 @@ public class RouteHandlerServlet extends HttpServlet {
     }
 
     private void handle(HttpMethod method, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-        if (!routeWrapper.canHandle(method)) throw new ServletException("Can not handle request");
+        if (!routeWrapper.canHandle(req, method)) throw new ServletException("Can not handle request");
 
         try {
             Object invokedResponse = new MethodInvoker().invokeMethod(routeWrapper.getMethod(), instance, req,  resp);

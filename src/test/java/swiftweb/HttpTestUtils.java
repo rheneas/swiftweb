@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class HttpTestUtils {
 
-    public static String getSuccess(String uri, HttpClient httpClient) throws IOException {
+    public static String get(HttpClient httpClient, String uri) throws IOException {
         HttpResponse httpResponse = httpClient.execute(new HttpGet(uri));
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode != 200) {
