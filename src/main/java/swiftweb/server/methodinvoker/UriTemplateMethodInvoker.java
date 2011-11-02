@@ -1,4 +1,7 @@
-package swiftweb.server;
+package swiftweb.server.methodinvoker;
+
+import swiftweb.server.UriTemplateRouteWrapper;
+import swiftweb.server.methodinvoker.MethodInvokerInterface;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,7 +10,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-public class MethodInvoker {
+public class UriTemplateMethodInvoker implements MethodInvokerInterface {
+
+    private final UriTemplateRouteWrapper routeWrapper;
 
     private interface Invoker {
         Object invoke(Method method, Object instance, HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, IllegalAccessException;
@@ -17,11 +22,12 @@ public class MethodInvoker {
 
     private class NoArgsInvoker implements Invoker {
         public Object invoke(Method method, Object instance, HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, IllegalAccessException {
-            return method.invoke(instance);
+            String[] parameters = routeWrapper.getParameters(request.getRequestURI());
+            return method.invoke(instance, (Object[]) parameters);
         }
 
         public boolean handlesMethod(Method method) {
-            return method.getParameterTypes().length == 0 && method.getReturnType().isAssignableFrom(String.class);
+            return method.getParameterTypes().length == routeWrapper.getNoOfParametersInUri() && method.getReturnType().isAssignableFrom(String.class);
         }
     }
 
@@ -56,10 +62,10 @@ public class MethodInvoker {
         }
     }
 
-    private List<Invoker> invokers = Arrays.asList(new NoArgsInvoker(), new ResponseParamInvoker(), new RequestParamInvoker(), new RequestAndResponseParamsInvoker());
+    private final List<Invoker> invokers = Arrays.asList(new NoArgsInvoker(), new ResponseParamInvoker(), new RequestParamInvoker(), new RequestAndResponseParamsInvoker());
 
-    public boolean handlesMethod(Method method) {
-        return getInvoker(method) != null;
+    public UriTemplateMethodInvoker(UriTemplateRouteWrapper routeWrapper) {
+        this.routeWrapper = routeWrapper;
     }
 
     public Invoker getInvoker(Method method) {

@@ -63,6 +63,7 @@ public class ServerDSL {
             return start();
         }
 
+        @SuppressWarnings("unchecked")
         private void processConfig(Class clazz) throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
             Method portMethod;
             try {

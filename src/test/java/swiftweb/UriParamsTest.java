@@ -19,9 +19,14 @@ public class UriParamsTest {
     private HttpClient httpClient;
 
     public static class WildCardPathServer {
-        @Route(path = "xml/{:id}", status = 200, contentType = "application/xml")
+        @Route(path = "xml/{:id}")
         public String xml(String id) {
             return id;
+        }
+
+        @Route(path = "/groups/{:id}/students/{:moreids}")
+        public String groupsAndStudents(String id, String moreIds) {
+            return id + moreIds;
         }
     }
 
@@ -40,5 +45,6 @@ public class UriParamsTest {
     @Test
     public void shouldGetUriWithAParameter() throws IOException {
         assertEquals("23", get(httpClient, "http://localhost:8080/xml/23"));
+        assertEquals("23100", get(httpClient, "http://localhost:8080/groups/23/students/100"));
     }
 }

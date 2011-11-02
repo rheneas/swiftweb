@@ -61,4 +61,8 @@ public class RouteWrapper {
     public boolean canHandle(HttpServletRequest req, HttpMethod httpMethod) {
         return this.httpMethod == httpMethod;
     }
+
+    public int getNoOfParametersInUri() {
+        return 0;
+    }
 }

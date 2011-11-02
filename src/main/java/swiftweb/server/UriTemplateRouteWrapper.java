@@ -1,9 +1,10 @@
 package swiftweb.server;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
 import org.springframework.web.util.UriTemplate;
+import swiftweb.dsl.HttpMethod;
 import swiftweb.dsl.Route;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,15 @@ public class UriTemplateRouteWrapper extends RouteWrapper {
         this.uriTemplate = new UriTemplate(routeAnnotation.path());
     }
 
+    public int getNoOfParametersInUri() {
+        return uriTemplate.getVariableNames().size();
+    }
+
+    @Override
+    public boolean canHandle(HttpServletRequest req, HttpMethod httpMethod) {
+        return super.canHandle(req, httpMethod);
+    }
+
     @Override
     public String getServletPath() {
         Matcher matcher = BASE_PATH_PATTERN.matcher(path);
@@ -27,5 +37,9 @@ public class UriTemplateRouteWrapper extends RouteWrapper {
         } else {
             throw new IllegalArgumentException("Could not parse servlet path " + path);
         }
+    }
+
+    public String[] getParameters(String requestURI) {
+        return uriTemplate.match(requestURI).values().toArray(new String[]{});
     }
 }

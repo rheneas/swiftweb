@@ -1,6 +1,7 @@
 package swiftweb.server;
 
 import swiftweb.dsl.HttpMethod;
+import swiftweb.server.methodinvoker.MethodInvokerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,7 +54,7 @@ public class RouteHandlerServlet extends HttpServlet {
         if (!routeWrapper.canHandle(req, method)) throw new ServletException("Can not handle request");
 
         try {
-            Object invokedResponse = new MethodInvoker().invokeMethod(routeWrapper.getMethod(), instance, req,  resp);
+            Object invokedResponse = new MethodInvokerFactory().newMethodInvoker(routeWrapper).invokeMethod(routeWrapper.getMethod(), instance, req, resp);
             if (invokedResponse instanceof String) {
                 handleStringResponse((String) invokedResponse, resp);
             }
