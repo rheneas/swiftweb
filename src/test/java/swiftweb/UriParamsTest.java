@@ -9,6 +9,7 @@ import swiftweb.dsl.Route;
 import swiftweb.dsl.ServerDSL;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -34,6 +35,16 @@ public class UriParamsTest {
         public String request(String id, HttpServletRequest request) {
             return id;
         }
+
+        @Route(path = "/response/{:id}")
+        public void response(String id, HttpServletResponse response) throws IOException {
+            response.getWriter().write(id);
+        }
+
+        @Route(path = "/both/{:id}")
+        public String bothRequestResponse(String id, HttpServletRequest request, HttpServletResponse response) {
+            return id;
+        }
     }
 
     @Before
@@ -53,5 +64,7 @@ public class UriParamsTest {
         assertEquals("23", get(httpClient, "http://localhost:8080/xml/23"));
         assertEquals("23100", get(httpClient, "http://localhost:8080/groups/23/students/100"));
         assertEquals("23", get(httpClient, "http://localhost:8080/request/23"));
+        assertEquals("somestring", get(httpClient, "http://localhost:8080/both/somestring"));
+        assertEquals("someresponse", get(httpClient, "http://localhost:8080/response/someresponse"));
     }
 }

@@ -1,7 +1,6 @@
 package swiftweb.server.methodinvoker;
 
 import swiftweb.server.UriTemplateRouteWrapper;
-import swiftweb.server.methodinvoker.MethodInvokerInterface;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,11 +34,16 @@ public class UriTemplateMethodInvoker implements MethodInvokerInterface {
 
     private class ResponseParamInvoker implements Invoker {
         public Object invoke(Method method, Object instance, HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, IllegalAccessException {
-            return method.invoke(instance, response);
+            List<Object> parametersAsArray = new ArrayList<Object>();
+            Collections.addAll(parametersAsArray, routeWrapper.getParameters(request.getRequestURI()));
+            parametersAsArray.add(response);
+
+            return method.invoke(instance, parametersAsArray.toArray());
         }
 
         public boolean handlesMethod(Method method) {
-            return method.getParameterTypes().length == 1 && method.getParameterTypes()[0].isAssignableFrom(HttpServletResponse.class);
+            int expectedNoOfParameters = routeWrapper.getNoOfParametersInUri() + 1;
+            return method.getParameterTypes().length == expectedNoOfParameters && method.getParameterTypes()[expectedNoOfParameters - 1].isAssignableFrom(HttpServletResponse.class);
         }
     }
 
@@ -60,12 +64,19 @@ public class UriTemplateMethodInvoker implements MethodInvokerInterface {
 
     private class RequestAndResponseParamsInvoker implements Invoker {
         public Object invoke(Method method, Object instance, HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, IllegalAccessException {
-            return method.invoke(instance, request, response);
+            List<Object> parametersAsArray = new ArrayList<Object>();
+            Collections.addAll(parametersAsArray, routeWrapper.getParameters(request.getRequestURI()));
+            parametersAsArray.add(request);
+            parametersAsArray.add(response);
+
+            return method.invoke(instance, parametersAsArray.toArray());
         }
 
         public boolean handlesMethod(Method method) {
-            return method.getParameterTypes().length == 2 && method.getParameterTypes()[0].isAssignableFrom(HttpServletRequest.class)
-                    && method.getParameterTypes()[1].isAssignableFrom(HttpServletResponse.class);
+            int expectedNoOfParameters = routeWrapper.getNoOfParametersInUri() + 2;
+
+            return method.getParameterTypes().length == expectedNoOfParameters && method.getParameterTypes()[expectedNoOfParameters - 2].isAssignableFrom(HttpServletRequest.class)
+                    && method.getParameterTypes()[expectedNoOfParameters - 1].isAssignableFrom(HttpServletResponse.class);
         }
     }
 
