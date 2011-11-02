@@ -54,10 +54,6 @@ public class RouteWrapper {
         return contentType;
     }
 
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
-    }
-
     public boolean canHandle(HttpServletRequest req, HttpMethod httpMethod) {
         return this.httpMethod == httpMethod;
     }

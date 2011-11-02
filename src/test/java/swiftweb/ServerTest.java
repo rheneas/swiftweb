@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static swiftweb.HttpTestUtils.*;
 import static swiftweb.dsl.ServerDSL.DSL;
 import static swiftweb.dsl.ServerDSL.run;
 
@@ -69,9 +70,7 @@ public class ServerTest {
 
     @Test
     public void shouldConfigurePostMethod() throws IOException {
-        HttpResponse httpResponse = httpClient.execute(new HttpPost("http://localhost:8080/postMe"));
-        assertEquals("post", EntityUtils.toString(httpResponse.getEntity()));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        assertEquals("post", post(httpClient, "http://localhost:8080/postMe"));
     }
 
     @Test
@@ -83,7 +82,6 @@ public class ServerTest {
 
     @Test
     public void shouldConfigurePlainJaneGet() throws IOException {
-        HttpResponse httpResponse = httpClient.execute(new HttpGet("http://localhost:8080/plainJaneGet"));
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        get(httpClient, "http://localhost:8080/plainJaneGet");
     }
 }
