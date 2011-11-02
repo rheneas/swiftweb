@@ -8,6 +8,7 @@ import org.junit.Test;
 import swiftweb.dsl.Route;
 import swiftweb.dsl.ServerDSL;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +29,11 @@ public class UriParamsTest {
         public String groupsAndStudents(String id, String moreIds) {
             return id + moreIds;
         }
+
+        @Route(path = "/request/{:id}")
+        public String request(String id, HttpServletRequest request) {
+            return id;
+        }
     }
 
     @Before
@@ -43,8 +49,9 @@ public class UriParamsTest {
     }
 
     @Test
-    public void shouldGetUriWithAParameter() throws IOException {
+    public void shouldGetUriWithParameters() throws IOException {
         assertEquals("23", get(httpClient, "http://localhost:8080/xml/23"));
         assertEquals("23100", get(httpClient, "http://localhost:8080/groups/23/students/100"));
+        assertEquals("23", get(httpClient, "http://localhost:8080/request/23"));
     }
 }

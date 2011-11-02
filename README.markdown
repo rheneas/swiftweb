@@ -19,7 +19,7 @@ Other alternatives
 TODO
 ----------------
 
-- URI templating
+- Remove reliance on Spring web's URI Templating
 - Basic auth
 - Heroku support
 - More doco
