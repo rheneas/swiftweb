@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class UriTemplateMethodInvoker implements MethodInvokerInterface {
@@ -45,9 +46,7 @@ public class UriTemplateMethodInvoker implements MethodInvokerInterface {
     private class RequestParamInvoker implements Invoker {
         public Object invoke(Method method, Object instance, HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, IllegalAccessException {
             List<Object> parametersAsArray = new ArrayList<Object>();
-            for (String s : routeWrapper.getParameters(request.getRequestURI())) {
-                parametersAsArray.add(s);
-            }
+            Collections.addAll(parametersAsArray, routeWrapper.getParameters(request.getRequestURI()));
             parametersAsArray.add(request);
 
             return method.invoke(instance, parametersAsArray.toArray());
