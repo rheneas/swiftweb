@@ -4,6 +4,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import swiftweb.dsl.Route;
 import swiftweb.dsl.ServerDSL;
@@ -21,6 +22,17 @@ public class UriParamsTest {
     private HttpClient httpClient;
 
     public static class WildCardPathServer {
+        @Route(path = "similar/{:id}/hello")
+        public String similarWithHello(String id) {
+            return "with hello";
+        }
+
+        @Route(path = "similar/{:id}")
+        public String similar(String id) {
+            return "without hello";
+        }
+
+
         @Route(path = "xml/{:id}")
         public String xml(String id) {
             return id;
@@ -66,5 +78,11 @@ public class UriParamsTest {
         assertEquals("23", get(httpClient, "http://localhost:8080/request/23"));
         assertEquals("somestring", get(httpClient, "http://localhost:8080/both/somestring"));
         assertEquals("someresponse", get(httpClient, "http://localhost:8080/response/someresponse"));
+    }
+
+    @Test @Ignore
+    public void shouldGetWithSimilarUris() throws IOException {
+        assertEquals("without hello", get(httpClient, "http://localhost:8080/similar/11"));
+        assertEquals("with hello", get(httpClient, "http://localhost:8080/similar/11/hello"));
     }
 }
