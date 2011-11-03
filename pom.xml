@@ -77,7 +77,7 @@
                             <generateRepository>false</generateRepository>
                             <programs>
                                 <program>
-                                    <mainClass>swiftweb.ExampleServer</mainClass>
+                                    <mainClass>ExampleServer</mainClass>
                                     <name>webapp</name>
                                 </program>
                             </programs>
