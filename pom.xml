@@ -76,7 +76,7 @@
                             <assembleDirectory>target</assembleDirectory>
                             <programs>
                                 <program>
-                                    <mainClass>ExampleServer</mainClass>
+                                    <mainClass>swiftweb.example.HerokuExampleServer</mainClass>
                                     <name>webapp</name>
                                 </program>
                             </programs>

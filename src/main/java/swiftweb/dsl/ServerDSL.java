@@ -20,20 +20,24 @@ public class ServerDSL {
 
     public static final int DEFAULT_PORT = 8080;
 
-    public static DSL run(Class... classes) throws Exception {
+    public static DSL run(Class... classes) {
         return runClasses(DEFAULT_PORT, classes);
     }
 
-    public static DSL runInHeroku(Class... classes) throws Exception {
+    public static DSL runInHeroku(Class... classes) {
         return runClasses(Integer.valueOf(System.getenv("PORT")), classes);
     }
 
-    private static DSL runClasses(int port, Class... classes) throws Exception {
-        DSL dsl = new DSL(port);
-        for (Class clazz : classes) {
-            dsl.run(clazz);
+    private static DSL runClasses(int port, Class... classes) {
+        try {
+            DSL dsl = new DSL(port);
+            for (Class clazz : classes) {
+                dsl.run(clazz);
+            }
+            return dsl;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return dsl;
     }
 
     public static final class DSL {
