@@ -9,11 +9,10 @@ import java.io.IOException;
 
 import static swiftweb.dsl.ServerDSL.*;
 
-@Security(user="user", password = "password")
 public class ExampleServer {
 
     public int port() {
-        return 3000;
+        return 80;
     }
 
     @Route
