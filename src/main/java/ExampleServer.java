@@ -34,6 +34,6 @@ public class ExampleServer {
     }
 
     public static void main(String[] args) throws Exception {
-        run(ExampleServer.class);
+//        run(ExampleServer.class);
     }
 }
