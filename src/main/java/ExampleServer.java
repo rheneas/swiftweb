@@ -1,8 +1,5 @@
-package swiftweb;
-
 import swiftweb.dsl.HttpMethod;
 import swiftweb.dsl.Route;
-import swiftweb.dsl.Security;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
