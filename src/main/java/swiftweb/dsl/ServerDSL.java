@@ -1,16 +1,17 @@
 package swiftweb.dsl;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.security.Constraint;
-import org.mortbay.jetty.security.ConstraintMapping;
-import org.mortbay.jetty.security.SecurityHandler;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.http.security.Constraint;
+import org.eclipse.jetty.http.security.Password;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import swiftweb.server.RouteHandlerServlet;
 import swiftweb.server.RouteWrapper;
 import swiftweb.server.RouteWrapperFactory;
-import swiftweb.server.realm.InMemoryRealm;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,38 +29,26 @@ public class ServerDSL {
     public static final class DSL {
         private int port = 8080;
         private Server server;
-        private Context context;
-        private SecurityHandler securityHandler;
+        private ServletContextHandler servletContextHandler;
 
         public DSL() {
             server = new Server(port);
-            context = new Context(server, "/", Context.NO_SESSIONS);
+            servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+            server.setHandler(servletContextHandler);
         }
 
         public DSL stop() throws Exception {
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        server.stop();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
+            server.stop();
             return this;
         }
 
         public DSL start() throws Exception {
-            if (context.getServletHandler().getServletMappings().length == 0) {
+            if (servletContextHandler.getServletHandler().getServletMappings().length == 0) {
                 throw new IllegalStateException("No registered classes, not starting the server");
             }
 
             Connector connector = getFirstConnector();
             connector.setPort(port);
-            if (securityHandler != null) {
-                context.setSecurityHandler(securityHandler);
-            }
             server.start();
             return this;
         }
@@ -74,12 +63,12 @@ public class ServerDSL {
             return start();
         }
 
-        @SuppressWarnings("unchecked")
         private void processConfig(Class clazz) throws NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
             setPort(clazz);
             setSecurity(clazz);
         }
 
+        @SuppressWarnings("unchecked")
         private void setPort(Class clazz) throws InstantiationException, IllegalAccessException, InvocationTargetException {
             Method portMethod;
             try {
@@ -96,7 +85,6 @@ public class ServerDSL {
         private void setSecurity(Class clazz) {
             Security securityAnnotation = (Security) clazz.getAnnotation(Security.class);
             if (securityAnnotation != null) {
-                securityAnnotation.password();
                 Constraint constraint = new Constraint();
                 constraint.setName(Constraint.__BASIC_AUTH);
                 String genericRole = "genericRole";
@@ -107,9 +95,14 @@ public class ServerDSL {
                 cm.setConstraint(constraint);
                 cm.setPathSpec("/*");
 
-                securityHandler = new SecurityHandler();
-                securityHandler.setUserRealm(new InMemoryRealm(genericRole, securityAnnotation.user(), securityAnnotation.password()));
+                ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
                 securityHandler.setConstraintMappings(new ConstraintMapping[]{cm});
+                HashLoginService loginService = new HashLoginService("role");
+                loginService.putUser(securityAnnotation.user(), new Password(securityAnnotation.password()), new String[]{genericRole});
+                securityHandler.setLoginService(loginService);
+
+                securityHandler.setHandler(servletContextHandler);
+                server.setHandler(securityHandler);
             }
         }
 
@@ -117,12 +110,12 @@ public class ServerDSL {
             for (Method m : clazz.getMethods()) {
                 if (m.isAnnotationPresent(Route.class)) {
                     Route routeAnnotation = m.getAnnotation(Route.class);
-                    addRouteToContext(new RouteWrapperFactory().newRouteWrapper(clazz, m, routeAnnotation), context);
+                    addRouteToContext(new RouteWrapperFactory().newRouteWrapper(clazz, m, routeAnnotation), servletContextHandler);
                 }
             }
         }
 
-        private void addRouteToContext(RouteWrapper routeWrapper, Context context) throws InstantiationException, IllegalAccessException {
+        private void addRouteToContext(RouteWrapper routeWrapper, ServletContextHandler context) throws InstantiationException, IllegalAccessException {
             String path = routeWrapper.getServletPath();
             path = path.startsWith("/") ? path : "/" + path;
             context.addServlet(new ServletHolder(new RouteHandlerServlet(routeWrapper)), path);

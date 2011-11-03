@@ -2,12 +2,14 @@ package swiftweb;
 
 import swiftweb.dsl.HttpMethod;
 import swiftweb.dsl.Route;
+import swiftweb.dsl.Security;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static swiftweb.dsl.ServerDSL.run;
+import static swiftweb.dsl.ServerDSL.*;
 
+@Security(user="user", password = "password")
 public class ExampleServer {
 
     public int port() {
