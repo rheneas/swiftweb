@@ -9,7 +9,7 @@ import static swiftweb.dsl.ServerDSL.*;
 public class ExampleServer {
 
     public int port() {
-        return 8080;
+        return Integer.valueOf(System.getenv("PORT"));
     }
 
     @Route
