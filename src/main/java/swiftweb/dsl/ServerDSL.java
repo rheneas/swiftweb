@@ -13,8 +13,12 @@ import java.lang.reflect.Method;
 
 public class ServerDSL {
 
-    public static DSL run(Class clazz) throws Exception {
-        return new DSL().run(clazz);
+    public static DSL run(Class... classes) throws Exception {
+        DSL dsl = new DSL();
+        for (Class clazz : classes) {
+            dsl.run(clazz);
+        }
+        return dsl;
     }
 
     public static final class DSL {
