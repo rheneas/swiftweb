@@ -7,7 +7,16 @@ The underlying design philosophy behind swiftweb is to provide a brain dead appr
 
 Features
 -------------------
+- Routing based on annotations
+- Routing with limited URI templating support
+- Single user/password Basic auth support
 
+TODO
+----------------
+- Refactor method invoking code to remove duplication
+- Remove reliance on Spring web's URI Templating
+- Heroku support
+- More doco
 
 
 Other alternatives
@@ -15,12 +24,3 @@ Other alternatives
 - http://www.sinatrarb.com/
 - http://www.sparkjava.com/
 - http://github.com/jacek99/Napalm
-
-TODO
-----------------
-
-- Refactor method invoking code to remove duplication
-- Remove reliance on Spring web's URI Templating
-- Basic auth
-- Heroku support
-- More doco
