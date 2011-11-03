@@ -77,7 +77,7 @@
                             <generateRepository>false</generateRepository>
                             <programs>
                                 <program>
-                                    <mainClass>ExampleServer</mainClass>
+                                    <mainClass>HelloWorld</mainClass>
                                     <name>webapp</name>
                                 </program>
                             </programs>
