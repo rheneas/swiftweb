@@ -18,8 +18,18 @@ import java.lang.reflect.Method;
 
 public class ServerDSL {
 
+    public static final int DEFAULT_PORT = 8080;
+
     public static DSL run(Class... classes) throws Exception {
-        DSL dsl = new DSL();
+        return runClasses(DEFAULT_PORT, classes);
+    }
+
+    public static DSL runInHeroku(Class... classes) throws Exception {
+        return runClasses(Integer.valueOf(System.getenv("PORT")), classes);
+    }
+
+    private static DSL runClasses(int port, Class... classes) throws Exception {
+        DSL dsl = new DSL(port);
         for (Class clazz : classes) {
             dsl.run(clazz);
         }
@@ -27,14 +37,15 @@ public class ServerDSL {
     }
 
     public static final class DSL {
-        private int port = 8080;
+        private int port;
         private Server server;
         private ServletContextHandler servletContextHandler;
 
-        public DSL() {
+        public DSL(int port) {
             server = new Server(port);
             servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
             server.setHandler(servletContextHandler);
+            this.port = port;
         }
 
         public DSL stop() throws Exception {

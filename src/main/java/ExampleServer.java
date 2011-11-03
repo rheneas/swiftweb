@@ -8,10 +8,6 @@ import static swiftweb.dsl.ServerDSL.*;
 
 public class ExampleServer {
 
-    public int port() {
-        return Integer.valueOf(System.getenv("PORT"));
-    }
-
     @Route
     public String helloWorld() {
         return "<xml>some crappy xml structure</xml>";
@@ -34,6 +30,6 @@ public class ExampleServer {
     }
 
     public static void main(String[] args) throws Exception {
-        run(ExampleServer.class);
+        runInHeroku(ExampleServer.class);
     }
 }

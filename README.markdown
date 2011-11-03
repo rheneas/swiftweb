@@ -10,12 +10,12 @@ Features
 - Routing based on annotations
 - Routing with limited URI templating support
 - Single user/password Basic auth support
+- Can be deployed into heroku, http://swiftweb.herokuapp.com/helloWorld
 
 TODO
 ----------------
 - Refactor method invoking code to remove duplication
 - Remove reliance on Spring web's URI Templating
-- Heroku support
 - More doco
 
 
