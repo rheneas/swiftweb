@@ -1,27 +1,19 @@
 package swiftweb;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import swiftweb.dsl.Route;
-import swiftweb.dsl.ServerDSL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static swiftweb.HttpTestUtils.get;
-import static swiftweb.dsl.ServerDSL.run;
+import static org.junit.Assert.*;
+import static swiftweb.HttpTestUtils.*;
 
-public class UriParamsTest {
-    private ServerDSL.DSL dsl;
-    private HttpClient httpClient;
+public class UriParamsTest extends AbstractServerTest {
 
-    public static class WildCardPathServer {
+    public static class UriParamsServer {
         @Route(path = "similar/{:id}/hello")
         public String similarWithHello(String id) {
             return "with hello";
@@ -59,16 +51,9 @@ public class UriParamsTest {
         }
     }
 
-    @Before
-    public void before() throws Exception {
-        dsl = run(WildCardPathServer.class);
-        httpClient = new DefaultHttpClient();
-    }
-
-    @After
-    public void after() throws Exception {
-        httpClient.getConnectionManager().shutdown();
-        dsl.stop();
+    @Override
+    protected Class getServerClass() {
+        return UriParamsServer.class;
     }
 
     @Test
@@ -80,7 +65,8 @@ public class UriParamsTest {
         assertEquals("someresponse", get(httpClient, "http://localhost:8080/response/someresponse"));
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void shouldGetWithSimilarUris() throws IOException {
         assertEquals("without hello", get(httpClient, "http://localhost:8080/similar/11"));
         assertEquals("with hello", get(httpClient, "http://localhost:8080/similar/11/hello"));

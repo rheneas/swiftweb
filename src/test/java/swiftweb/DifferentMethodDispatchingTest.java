@@ -1,24 +1,22 @@
 package swiftweb;
 
-import swiftweb.dsl.Route;
-import swiftweb.dsl.ServerDSL;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import swiftweb.dsl.Route;
+import swiftweb.dsl.ServerDSL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static swiftweb.dsl.ServerDSL.run;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static swiftweb.HttpTestUtils.*;
+import static swiftweb.dsl.ServerDSL.*;
 
-public class DifferentMethodDispatchingTest {
-    private ServerDSL.DSL dsl;
-    private HttpClient httpClient;
+public class DifferentMethodDispatchingTest extends AbstractServerTest {
 
     public static class DifferentMethodDispatchingServer {
         @Route
@@ -47,16 +45,9 @@ public class DifferentMethodDispatchingTest {
         }
     }
 
-    @Before
-    public void before() throws Exception {
-        dsl = run(DifferentMethodDispatchingServer.class);
-        httpClient = new DefaultHttpClient();
-    }
-
-    @After
-    public void after() throws Exception {
-        httpClient.getConnectionManager().shutdown();
-        dsl.stop();
+    @Override
+    protected Class getServerClass() {
+        return DifferentMethodDispatchingServer.class;
     }
 
     @Test

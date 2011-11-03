@@ -1,22 +1,13 @@
 package swiftweb;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import swiftweb.dsl.Route;
-import swiftweb.dsl.ServerDSL;
 
 import java.io.IOException;
 
-import static swiftweb.HttpTestUtils.get;
-import static swiftweb.dsl.ServerDSL.run;
+import static swiftweb.HttpTestUtils.*;
 
-public class WildCardPathTest {
-
-    private ServerDSL.DSL dsl;
-    private HttpClient httpClient;
+public class WildCardPathTest extends AbstractServerTest {
 
     public static class WildCardPathServer {
         @Route(path = "xml/*", status = 200, contentType = "application/xml")
@@ -25,16 +16,9 @@ public class WildCardPathTest {
         }
     }
 
-    @Before
-    public void before() throws Exception {
-        dsl = run(WildCardPathServer.class);
-        httpClient = new DefaultHttpClient();
-    }
-
-    @After
-    public void after() throws Exception {
-        httpClient.getConnectionManager().shutdown();
-        dsl.stop();
+    @Override
+    protected Class getServerClass() {
+        return WildCardPathServer.class;
     }
 
     @Test

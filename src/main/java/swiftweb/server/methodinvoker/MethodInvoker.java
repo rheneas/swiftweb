@@ -15,6 +15,12 @@ public class MethodInvoker implements MethodInvokerInterface {
         boolean handlesMethod(Method method);
     }
 
+    /**
+     * Handles a method looking like
+     *
+     * public void doSomething();
+     *
+     */
     private class NoArgsInvoker implements Invoker {
         public Object invoke(Method method, Object instance, HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, IllegalAccessException {
             return method.invoke(instance);

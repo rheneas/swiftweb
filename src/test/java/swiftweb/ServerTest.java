@@ -1,30 +1,19 @@
 package swiftweb;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import swiftweb.dsl.HttpMethod;
 import swiftweb.dsl.Route;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static swiftweb.HttpTestUtils.*;
-import static swiftweb.dsl.ServerDSL.DSL;
-import static swiftweb.dsl.ServerDSL.run;
 
 
-public class ServerTest {
-
-    private DSL dsl;
-    private HttpClient httpClient;
+public class ServerTest extends AbstractServerTest {
 
     public static class DummyServer {
         @Route(path = "xml", status = 200, contentType = "application/xml")
@@ -48,17 +37,10 @@ public class ServerTest {
         }
     }
 
-    @Before
-    public void before() throws Exception {
-        dsl = run(DummyServer.class);
-        httpClient = new DefaultHttpClient();
+    protected Class getServerClass() {
+        return DummyServer.class;
     }
 
-    @After
-    public void after() throws Exception {
-        httpClient.getConnectionManager().shutdown();
-        dsl.stop();
-    }
 
     @Test
     public void shouldConfigureXmlGet() throws IOException {
